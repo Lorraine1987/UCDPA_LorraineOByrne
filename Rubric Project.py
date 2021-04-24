@@ -1,6 +1,8 @@
 # Import Modules
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 df = pd.read_csv('healthcare-dataset-stroke-data.csv')
 
@@ -68,8 +70,24 @@ Results2 = pd.DataFrame(Results, columns=["bmi category"])
 df2["bmi category"] = Results2
 print(df2.head(15))
 
+# Calculate the number of female and male observations to see if one outweighs the other
+def somecalculation(x):
+    return (df['gender'] == x).sum()
+
+print(somecalculation('Male'))
+print(somecalculation('Female'))
+
+# As female observations outweigh males, create male and female dataframes with an equal
+# number of observations and merge to form a new dataframe
+male = df2[df2["gender"] == "Male"].head(2100)
+
+female = df2[df2["gender"] == "Female"].head(2100)
 
 
+df3 = pd.concat([male, female], axis=0, join='outer', ignore_index=True)
 
+print(df3.head(10))
+
+print(df3.shape)
 
 
