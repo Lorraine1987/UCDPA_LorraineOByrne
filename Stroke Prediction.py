@@ -14,6 +14,7 @@ print(data)
 for p in data['people']:
     print(p['name'])
 
+# Commence EDA of Stroke Prediction Dataset
 # Import csv file: 'healthcare-dataset-stroke-data.csv'
 def importdata(filename):
     return pd.read_csv(filename)
@@ -36,7 +37,7 @@ print(missing_values(df).sum())
 
 # Replace missing values with average
 def replace_avg(data):
-    return df.fillna(df.mean())
+    return data.fillna(data.mean())
 
 df2 = replace_avg(df)
 
@@ -125,8 +126,8 @@ print(df3.head(10))
 
 print(df3.shape)
 
-# Converting age column in female data to list using Series.tolist()
 female_age = female["age"].tolist()
+# Converting age column in female data to list using Series.tolist()
 
 print("Converting age to list:")
 
@@ -183,44 +184,66 @@ print(np.mean(female_stroke_yes))
 # Print out the mean age of men who suffered a stroke
 print(np.mean(male_stroke_yes))
 
-g0 = sns.countplot(x='gender', data=df3, hue='stroke')
-g0.set_title("Probability of Stroke by Gender")
+# Pivot for mean and median bmi for stroke occurence
+mean_med_bmi_stroke = df3.pivot_table(values='bmi', index='stroke', aggfunc=[np.mean, np.median])
+print(mean_med_bmi_stroke)
+
+# Pivot for mean age for stroke occurence
+mean_age_stroke = df3.pivot_table(values='age', index='stroke')
+print(mean_age_stroke)
+
+# Pivot for mean age for stroke occurence factoring hypertension
+mean_age_stroke_hyp = df3.pivot_table(values='age', index='stroke', columns='hypertension')
+print(mean_age_stroke_hyp)
+
+# Pivot for mean age for stroke occurence factoring smoking status
+mean_age_stroke_smoke = df3.pivot_table(values='age', index='stroke', columns='smoking_status')
+print(mean_age_stroke_smoke)
+
+# Pivot for mean age for stroke occurence factoring work type
+mean_age_stroke_work = df3.pivot_table(values='age', index='stroke', columns='work_type', fill_value=0)
+print(mean_age_stroke_work)
+
+# Visualise Occurence of Stroke by Gender
+g = sns.countplot(x='gender', data=df3, hue='stroke')
+g.set_title("Probability of Stroke by Gender")
+plt.show()
 
 # Visualise Average Age of Stroke Patients by Gender
-g = sns.barplot(x='gender', y='age', data=df3, hue='stroke')
-g.set_title("Average Age of Stroke Patients by Gender")
+g1 = sns.barplot(x='gender', y='age', data=df3, hue='stroke')
+g1.set_title("Average Age of Stroke Patients by Gender")
 plt.show()
 
 # Visualise Distribution of Age
-g1 = sns.FacetGrid(df3, col="stroke", row="gender")
-g1.map_dataframe(sns.histplot, x="age", binwidth=10)
-g1.set_axis_labels("Age", "Count")
+g2 = sns.FacetGrid(df3, col="stroke", row="gender")
+g2.map_dataframe(sns.histplot, x="age", binwidth=10)
+g2.set_axis_labels("Age", "Count")
 plt.show()
 
 # Visualise Average Bmi of Stroke Patients by Gender
-g2 = sns.barplot(x='gender', y='bmi', data=df3, hue='stroke')
-g2.set_title("Average Bmi of Stroke Patients by Gender")
+g3 = sns.barplot(x='gender', y='bmi', data=df3, hue='stroke')
+g3.set_title("Average Bmi of Stroke Patients by Gender")
 plt.show()
 
 # Is there a relationship between age and bmi
-g3 = sns.relplot(x='age', y='bmi', data=df3, kind='scatter',
+g4 = sns.relplot(x='age', y='bmi', data=df3, kind='scatter',
             hue='gender', col='stroke')
-g3.fig.subplots_adjust(top=0.9, bottom=0.1)
-g3.fig.suptitle("Relationship between Age and Bmi when predicting Stroke")
+g4.fig.subplots_adjust(top=0.9, bottom=0.1)
+g4.fig.suptitle("Relationship between Age and Bmi when predicting Stroke")
 plt.show()
 
 # Visualise Occurence of Strokes per Smoking Status
-g4 = sns.countplot(x='stroke', data=df3, hue='smoking_status')
-g4.set_title("Occurence of Stroke per Smoking Status")
+g5 = sns.countplot(x='stroke', data=df3, hue='smoking_status')
+g5.set_title("Occurence of Stroke per Smoking Status")
 plt.show()
 
 # Visualise Occurence of Strokes with or without Heart Disease
-g5 = sns.countplot(x='stroke', data=df3, hue='heart_disease')
-g5.set_title("Occurence of Stroke w/wo Heart Disease ")
+g6 = sns.countplot(x='stroke', data=df3, hue='heart_disease')
+g6.set_title("Occurence of Stroke w/wo Heart Disease ")
 plt.show()
 
 # Visualise Occurence of Strokes per Bmi Category
-g6 = sns.countplot(x='stroke', data=df3, hue='bmi category')
+g7 = sns.countplot(x='stroke', data=df3, hue='bmi category')
 plt.show()
 
 
